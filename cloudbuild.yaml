@@ -1,0 +1,13 @@
+steps:
+# Build the container image
+- name: 'gcr.io/wasiatku/app_backend'
+  args: ['build', '-t', 'gcr.io/wasiatku/app_backend', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/wasiatku/app_backend'
+  args: ['push', 'gcr.io/wasiatku/app_backend']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'appbackend', '--image', 'gcr.io/wasiatku/app_backend', '--region', 'asia-southeast2', '--platform', 'managed']
+images:
+- gcr.io/wasiatku/app_backend
