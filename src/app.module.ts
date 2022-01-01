@@ -10,7 +10,7 @@ import { MailModule } from './core/mail/mail.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.development.env',
+      envFilePath: '.env',
       isGlobal : true
     }),
     MongooseModule.forRoot(process.env.URL_MONGO),
