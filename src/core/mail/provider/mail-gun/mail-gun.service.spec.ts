@@ -1,5 +1,5 @@
-import { EmailOptions } from './email-options.interface';
-import { MailService } from './mail.service';
+import { EmailOptions } from '../../email-options.interface';
+import { MailService } from '../../mail.service';
 import { Test } from '@nestjs/testing';
 import { MailgunService } from '@nextnm/nestjs-mailgun';
 import { MailGunService } from './mail-gun.service';
@@ -36,7 +36,7 @@ describe('mailService',()=>{
 
             const result = await mailGunService.sendEmail(option)
 
-            expect(mailgunService.sendEmail).toHaveBeenCalledWith(option)
+            expect(mailgunService.createEmail).toHaveBeenCalledWith(option)
         })
     })
 })

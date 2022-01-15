@@ -1,8 +1,8 @@
-import { EmailOptions } from './email-options.interface';
-import { MailService } from './mail.service';
+import { EmailOptions } from '../../email-options.interface';
+import { MailService } from '../../mail.service';
 import { Test } from '@nestjs/testing';
 import { MailgunService } from '@nextnm/nestjs-mailgun';
-import { MailSasService } from './mail-sas.service';
+import { MailSasService } from './mail-ses.service';
 import { SesService } from '@nextnm/nestjs-ses';
 describe('mailService',()=>{
     let sesService :SesService

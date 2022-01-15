@@ -1,7 +1,6 @@
 import { Injectable, BadRequestException, ConsoleLogger } from '@nestjs/common';
-import { MailgunService } from '@nextnm/nestjs-mailgun';
-import { EmailOptions } from './email-options.interface';
-import { IMailService } from './mail.interface';
+import { EmailOptions, MailgunService } from '@nextnm/nestjs-mailgun';
+import { IMailService } from '../../mail.interface';
 
 @Injectable()
 export class MailGunService implements IMailService {
@@ -21,7 +20,9 @@ export class MailGunService implements IMailService {
 
   async sendEmail(option: EmailOptions): Promise<void> {
     try {
-      return await this.mailgunService.sendEmail(option);
+
+      await this.mailgunService.createEmail('',option);
+
     } catch (error) {
       console.log(error);
     }
