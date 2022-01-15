@@ -4,7 +4,7 @@ import { EmailOptions } from './email-options.interface';
 import { IMailService } from './mail.interface';
 
 @Injectable()
-export class MailService implements IMailService {
+export class MailGunService implements IMailService {
   emailOptions: EmailOptions;
 
   constructor(private mailgunService: MailgunService) {
@@ -21,7 +21,7 @@ export class MailService implements IMailService {
 
   async sendEmail(option: EmailOptions): Promise<void> {
     try {
-      return await this.mailgunService.createEmail('sandboxa72283f4ff5a480ea7a2833c96fe7672.mailgun.org', option)
+      return await this.mailgunService.sendEmail(option);
     } catch (error) {
       console.log(error);
     }

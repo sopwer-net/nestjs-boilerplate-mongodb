@@ -1,9 +1,10 @@
 import { EmailOptions } from './email-options.interface';
-import { MailService } from './mail-gun.service';
+import { MailService } from './mail.service';
 import { Test } from '@nestjs/testing';
 import { MailgunService } from '@nextnm/nestjs-mailgun';
+import { MailGunService } from './mail-gun.service';
 describe('mailService',()=>{
-    let mailService : MailService
+    let mailGunService : MailGunService
     let mailgunService : MailgunService
 
     beforeEach(async ()=>{
@@ -17,8 +18,8 @@ describe('mailService',()=>{
             ]
         }).compile()
 
-        mailService = await module.get<MailService>(MailService)
         mailgunService = await module.get<MailgunService>(MailgunService)
+        mailGunService = await module.get<MailGunService>(MailGunService)
     })
 
     describe('it called MailService.sendEmail',()=>{
@@ -33,7 +34,7 @@ describe('mailService',()=>{
                 'h:X-Mailgun-Variables': '{"key":"value"}'
             }
 
-            const result = await mailService.sendEmail(option)
+            const result = await mailGunService.sendEmail(option)
 
             expect(mailgunService.sendEmail).toHaveBeenCalledWith(option)
         })
