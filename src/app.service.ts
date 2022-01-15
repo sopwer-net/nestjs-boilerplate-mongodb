@@ -5,21 +5,21 @@ import { TemplateEmail } from './core/mail/template.mail';
 @Injectable()
 export class AppService {
 
-  constructor(private mailService : MailService){
+  // constructor(private mailService : MailService){
     
-  }
+  // }
 
   async sendEmail(email: string, token: string) {
-    this.mailService.emailOptions.subject = 'verifilakasi email';
+    // this.mailService.emailOptions.subject = 'verifilakasi email';
 
-    this.mailService.emailOptions.to = email;
+    // this.mailService.emailOptions.to = email;
 
-    this.mailService.emailOptions.html = TemplateEmail({
-      url: `${process.env.URL_CONFIRM_ACCOUNT}/${token}`,
-      title: 'Konfirmasi Email',
-      message: 'pastikan ini adalah email kamu',
-    });
+    // this.mailService.emailOptions.html = TemplateEmail({
+    //   url: `${process.env.URL_CONFIRM_ACCOUNT}/${token}`,
+    //   title: 'Konfirmasi Email',
+    //   message: 'pastikan ini adalah email kamu',
+    // });
 
-    await this.mailService.sendEmail(this.mailService.emailOptions);
+    // await this.mailService.sendEmail(this.mailService.emailOptions);
   }
 }

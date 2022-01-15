@@ -13,9 +13,8 @@ import { MailModule } from './core/mail/mail.module';
       envFilePath: '.env',
       isGlobal : true
     }),
-    // MongooseModule.forRoot(process.env.URL_MONGO),
-    // CoreModule,
-    MailModule
+    MongooseModule.forRoot(process.env.URL_MONGO),
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

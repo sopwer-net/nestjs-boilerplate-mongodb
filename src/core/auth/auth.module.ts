@@ -28,7 +28,6 @@ import { MailService } from '../mail/mail.service';
     LocalStrategy,
     FacebookStrategy,
     GoogleStrategy,
-    MailService,
   ],
   exports:[AuthService]
 })
