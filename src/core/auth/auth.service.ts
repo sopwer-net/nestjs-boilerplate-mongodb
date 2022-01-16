@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { ProfileService } from '../profile/profile.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(private readonly profileService: ProfileService){}
+  validate(payload: CreateAuthDto) {
+    return {'message': 'success'}
   }
 
-  findAll() {
+  register() {
     return `This action returns all auth`;
   }
 
