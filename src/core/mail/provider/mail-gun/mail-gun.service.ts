@@ -1,5 +1,7 @@
 import { Injectable, BadRequestException, ConsoleLogger } from '@nestjs/common';
-import { EmailOptions, MailgunService } from '@nextnm/nestjs-mailgun';
+import { MailgunService } from '@nextnm/nestjs-mailgun';
+import { MailgunEmailModel } from '@nextnm/nestjs-mailgun/dist/nestjs-mailgun/classes/mailgun-email-model';
+import { EmailOptions } from '../../email-options.interface';
 import { IMailService } from '../../mail.interface';
 
 @Injectable()
@@ -9,7 +11,7 @@ export class MailGunService implements IMailService {
   constructor(private mailgunService: MailgunService) {
     this.emailOptions = {
       from: 'budazimbud@gmail.com',
-      to: '',
+      to: 'azimemaste@gmail.com',
       subject: 'confirm email',
       text: 'hallo',
       html: '',
@@ -20,8 +22,9 @@ export class MailGunService implements IMailService {
 
   async sendEmail(option: EmailOptions): Promise<void> {
     try {
+      const data = new MailgunEmailModel(this.emailOptions.from, option.to, option.subject, 'text', option.html);
 
-      await this.mailgunService.createEmail('',option);
+      await this.mailgunService.createEmail(`${process.env.DOMAIN_MAILGUN}`,data);
 
     } catch (error) {
       console.log(error);
