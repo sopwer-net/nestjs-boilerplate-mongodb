@@ -1,3 +1,7 @@
+const path = require("path")
+const handlebars = require("handlebars")
+const fs = require("fs")
+
 export interface EmailOptions {
     from: string;
     to: string | string[];
@@ -8,3 +12,8 @@ export interface EmailOptions {
     attachment?;
     'h:X-Mailgun-Variables'?: string;
   }
+
+
+const emailTemplateSource = fs.readFileSync(path.join(__dirname, "/template.hbs"), "utf8")
+
+const template = handlebars.compile(emailTemplateSource)

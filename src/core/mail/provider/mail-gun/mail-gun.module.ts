@@ -1,16 +1,19 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { MailgunModule } from "@nextnm/nestjs-mailgun";
 
 @Module({
     imports :[
-        MailgunModule.forRoot({
-            username: 'string',
-            key: 'string',
-            public_key: 'string', // OPTIONAL
-            timeout: 0, // OPTIONAL
-            url: 'string', // OPTIONAL // default: 'api.mailgun.net'. Note that if you are using the EU region the host should be set to 'api.eu.mailgun.net'
+        ConfigModule.forRoot({
+            envFilePath: '.development.env',
+            isGlobal : true
           }),
-    ] 
+        MailgunModule.forRoot({
+            username : process.env.USERNAME_MAILGUN,
+            key : process.env.KEY_MAILGUN
+            }),
+    ] ,
+    exports : [MailgunModule]
 })
 export class MailGunModule{
 
