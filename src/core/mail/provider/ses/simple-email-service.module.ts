@@ -1,12 +1,16 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { SesModule } from "@nextnm/nestjs-ses";
-
 @Module({
     imports : [ 
+        ConfigModule.forRoot({
+            envFilePath: '.development.env',
+            isGlobal : true
+          }),
         SesModule.forRoot({
-            SECRET: 'TKjA50XQQ0DItevbrqtVzkVtPXeTg068fLZZAUiJ',
-            AKI_KEY: 'AKIA454DOEUVKQ2XB4UZ',
-            REGION: 'us-east-2',
+            SECRET: `${process.env.SECRET_SES}`,
+            AKI_KEY: `${process.env.API_KEY_SES}`,
+            REGION: `${process.env.REGION_sES}`,
         }),],
         exports : [SesModule]
     })

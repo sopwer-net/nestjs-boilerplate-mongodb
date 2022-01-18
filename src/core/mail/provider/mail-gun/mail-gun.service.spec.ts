@@ -3,17 +3,16 @@ import { MailService } from '../../mail.service';
 import { Test } from '@nestjs/testing';
 import { MailgunService } from '@nextnm/nestjs-mailgun';
 import { MailGunService } from './mail-gun.service';
-import { MailgunEmailModel } from '@nextnm/nestjs-mailgun/dist/nestjs-mailgun/classes/mailgun-email-model';
 describe('mailService',()=>{
     let mailGunService : MailGunService
     let mailgunService : MailgunService
 
     beforeEach(async ()=>{
         const module = await Test.createTestingModule({
-            providers:[MailGunService,
+            providers:[MailService,
                 {
                     provide:MailgunService , useFactory:()=>({
-                        createEmail : jest.fn(()=>{})
+                        sendEmail : jest.fn(()=>{})
                     })
                 }
             ]
@@ -37,10 +36,7 @@ describe('mailService',()=>{
 
             const result = await mailGunService.sendEmail(option)
 
-            const data = new MailgunEmailModel(option.from, option.to, option.subject, 'text', option.html);
-
-
-            expect(mailgunService.createEmail).toHaveBeenCalledWith(`${process.env.DOMAIN_MAILGUN}`,data)
+            expect(mailgunService.createEmail).toHaveBeenCalledWith(option)
         })
     })
 })

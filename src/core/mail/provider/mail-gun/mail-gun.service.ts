@@ -10,7 +10,7 @@ export class MailGunService implements IMailService {
 
   constructor(private mailgunService: MailgunService) {
     this.emailOptions = {
-      from: 'budazimbud@gmail.com',
+      from: 'keepMyspace@gmail.com',
       to: 'azimemaste@gmail.com',
       subject: 'confirm email',
       text: 'hallo',
