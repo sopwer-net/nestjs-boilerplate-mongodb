@@ -6,7 +6,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from '../auth/authenticator/jwt-auth.guard';
 import { Profile } from './entities/profile.entity';
 
-@Controller('profile')
+@Controller('profiles')
+@UseGuards(JwtAuthGuard)
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
