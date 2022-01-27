@@ -23,7 +23,10 @@ describe('AuthController', () => {
           provide: AuthService,
           useFactory: () => ({
             validate: jest.fn(() => ({})),
-            register : jest.fn(()=>{})
+            register : jest.fn(()=>{}),
+            verification : jest.fn(()=>{}),
+            forgetPassword: jest.fn(()=>{})
+
           }),
         }
         
@@ -32,6 +35,7 @@ describe('AuthController', () => {
 
     controller = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2)
   });
 
   describe('user signup', ()=>{
@@ -44,8 +48,14 @@ describe('AuthController', () => {
         password: 'string',
         passwordConfirm: 'string'
       }
+      const token = "eashfsuajhfay378627tafgashjfgjasfghjsgdhfjgsahjfgjsahfghsdayuewfasdf"
+      jest.spyOn(authService , "register").mockResolvedValue(token)
       const result = await controller.register(payload)
       expect(authService.register).toHaveBeenCalledWith(payload);
+      expect(eventEmitter.emit).toHaveBeenCalledWith('send.token' ,payload.email , token)
+      expect(result).toEqual( {
+        message : "check your email"
+      })
     });
   });
 
@@ -66,4 +76,27 @@ describe('AuthController', () => {
       })
     })
   })
+
+  describe('it called authController.verification',()=>{
+    it('should called authService.verification' , async()=>{
+      const token = "dsahfjksahflsdjfjkhsakhfkjsdahfjkdsahfjkhasjkhf"
+      const result = await controller.verification(token)
+      expect(authService.verification).toHaveBeenCalledWith(token)
+    })
+  })
+
+  describe('it called authController.resetPassword' ,()=>{
+    it('should called authService.forgetPassword and eventEmitter.emit ',async ()=>{
+      const email = "azim@gmail.com"
+      const token = "asdhfjsahfjsadhfjsafgjhsdahfgs"
+      jest.spyOn(authService , "forgetPassword").mockResolvedValue(token)
+      const result = await controller.forgetPassword(email)
+      expect(authService.forgetPassword).toHaveBeenCalledWith(email)
+      expect(eventEmitter.emit).toHaveBeenCalledWith('send.tokenForget' ,email , token)
+      expect(result).toEqual({
+        message : "check your email"
+      })
+    })
+  })
+
 });

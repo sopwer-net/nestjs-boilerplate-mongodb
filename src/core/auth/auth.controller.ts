@@ -35,6 +35,19 @@ export class PayloadSignin{
   password: string;
 }
 
+export class PayloadReset{
+  @IsString()
+  @MinLength(4)
+  @MaxLength(20)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'password too weak'})
+  password: string;
+  @IsString()
+  @MinLength(4)
+  @MaxLength(20)
+  @Match('password' ,{message :"its not assignable"})
+  passwordConfirm: string;
+}
+
 
 @Controller('auth')
 export class AuthController {
@@ -75,8 +88,20 @@ export class AuthController {
     }
   }
 
-  @Post('reset-password')
-  resetPassword(@Body('email') email :string){
+  @Post('forget-password')
+  async forgetPassword(@Body('email') email :string){
+    const token = await this.authService.forgetPassword(email)
 
+    await this.eventEmitter.emit('send.tokenForget' ,email , token)
+
+    return {
+      message : "check your email",
+      token : token
+    }
+  }
+
+  @Get('reset-password/:token')
+  resetPassword(@Param('token')token : string , @Body() password : PayloadReset){ 
+    return this.authService.resetPassword(token , password )
   }
 }

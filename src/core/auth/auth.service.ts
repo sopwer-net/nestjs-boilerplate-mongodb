@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { ProfileService } from '../profile/profile.service';
-import { PayloadSignin, PayloadSignup } from './auth.controller';
+import { PayloadSignin, PayloadSignup, PayloadReset } from './auth.controller';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { HashService } from './authenticator/hash.service';
@@ -49,7 +49,7 @@ export class AuthService {
 
       const verifyToken :any = await this.jwtService.verify(token)
     
-      return this.profileService.update(verifyToken.idUser ,{isVerified : true ,...new UpdateProfileDto()} )
+      await this.profileService.update(verifyToken.idUser ,{isVerified : true ,...new UpdateProfileDto()} )
 
     }catch(error){
       this.logger.error(error)
@@ -58,18 +58,38 @@ export class AuthService {
    
   }
 
+  async forgetPassword(email : string ){
+    try{
+      const findEmail = await this.profileService.findOneByEmail(email)
+      if(findEmail){
+        return this.jwtService.sign({idUser : findEmail.id})
+      }
+      throw new Error()
+    }catch(error){
+      this.logger.error(error)
+      throw new BadRequestException('your email havent register')
+    }
+
+  }
+
+  async resetPassword(token : string , payloadReset : PayloadReset){
+    payloadReset.password = await this.hashService.hashPassword(payloadReset.password)
+
+    try{
+
+      const verifyToken : any = await this.jwtService.verify(token)
+
+      return this.profileService.update(verifyToken.idUser ,{...payloadReset ,...new UpdateProfileDto()} )
+
+    }catch(error){
+      this.logger.error(error)
+      throw new BadRequestException('your token not valid')
+    }
+   
+  }
+
 
   
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+ 
 }

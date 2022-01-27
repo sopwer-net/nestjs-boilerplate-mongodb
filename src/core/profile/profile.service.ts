@@ -28,7 +28,7 @@ export class ProfileService {
   }
 
   update(id: string, updateProfileDto: UpdateProfileDto) {
-    return this.profileRepository.findOneAndUpdate({_id : id} ,updateProfileDto);
+    return this.profileRepository.findOneAndUpdate({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto});
   }
 
 

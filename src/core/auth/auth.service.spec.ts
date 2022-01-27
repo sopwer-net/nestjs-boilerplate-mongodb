@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileService } from '../profile/profile.service';
 import { AuthService } from './auth.service';
 import { HashService } from './authenticator/hash.service';
-import { PayloadSignin, PayloadSignup } from './auth.controller';
+import { PayloadSignin, PayloadSignup, PayloadReset } from './auth.controller';
 import { Profile } from '../profile/entities/profile.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateProfileDto } from '../profile/dto/update-profile.dto';
+import { BadRequestException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -92,6 +93,64 @@ describe('AuthService', () => {
       const result = await authService.validate(payload)
       expect(profileService.findOneByEmail).toHaveBeenCalledWith(payload.email)
       expect(jwtService.sign).toHaveBeenCalledWith({id : profile.id , email : profile.email})
+    })
+  })
+
+  describe('it called authService.forgetPassword',()=>{
+    it('should called profileService.findOneByEmail and jwtService.sign',async()=>{
+      const email = 'email@gmail.com'
+      const token = "dksahfjsahfkasdhfksahfkjashfjashfjsadh"
+      const profile = new Profile()
+      jest.spyOn(jwtService , "sign").mockReturnValue(token)
+      const findEmail :any= jest.spyOn(profileService , "findOneByEmail").mockResolvedValue(profile)
+        const result = await authService.forgetPassword(email)
+        expect(profileService.findOneByEmail).toHaveBeenCalledWith(email)
+        expect(jwtService.sign).toHaveBeenCalledWith({idUser : findEmail.id})
+        expect(result).toEqual(token)
+     
+
+    })
+
+    it('should return user not found',async()=>{
+      const email = 'email@gmail.com'
+      const token = "dksahfjsahfkasdhfksahfkjashfjashfjsadh"
+      const profile = new Profile()
+      jest.spyOn(jwtService , "sign").mockReturnValue(token)
+      try{
+        const result = await authService.forgetPassword(email)
+        expect(profileService.findOneByEmail).toHaveBeenCalledWith(email)
+        expect(jwtService.sign).toHaveBeenCalledWith({email : email})
+        expect(result).toEqual(token)
+      }catch(error){
+        expect(error).toBeInstanceOf(BadRequestException)
+      }
+    
+  })
+
+    
+  })
+
+  describe('authService.resetPassword',()=>{
+    it('should called hashedPasswordService.hash , jwtService.verify and profileService.update' ,async()=>{
+      const payloadReset : PayloadReset = {
+        "password":"Azim!@#1234",
+        "passwordConfirm":"Azim!@#1234"
+      }
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjIyYzE3NThmYTdlNzk2ZTJkZGY2MSIsImVtYWlsIjoiYnVkYXppbWJ1ZEBnbWFpbC5jb20iLCJpYXQiOjE2NDMyNjY5MzIsImV4cCI6MTY0MzM1MzMzMn0.mG6BYdhiUuEbazQqwm4pEc42m5dV7YA6XRHAoi7URkg'
+      const profile  = new Profile()
+      profile.email = "a123"
+      profile.id = "1231"
+      const verifyToken = {
+        idUser : '123'
+
+      }
+      
+       jest.spyOn(jwtService , "verify").mockReturnValue(verifyToken)
+      jest.spyOn(hashService , "hashPassword").mockResolvedValue(payloadReset.password)
+      const result = await authService.resetPassword(token , payloadReset)
+      expect(hashService.hashPassword).toHaveBeenCalledWith(payloadReset.password)
+      expect(jwtService.verify).toHaveBeenCalledWith(token)
+      expect(profileService.update).toHaveBeenCalledWith(verifyToken.idUser ,{...payloadReset ,...new UpdateProfileDto()})
     })
   })
 

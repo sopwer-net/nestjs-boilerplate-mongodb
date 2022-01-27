@@ -7,6 +7,7 @@ import { MailService } from '../../mail/mail.service';
 export class AuthMailService {
   constructor(private mailService: MailService) {}
 
+  @OnEvent('send.tokenForget')
   async sendEmailforget(email: string, token: string) {
     this.mailService.emailOptions.subject = 'Reset password';
 
