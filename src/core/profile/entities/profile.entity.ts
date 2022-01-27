@@ -34,7 +34,7 @@ export class Profile {
     @Prop( {default : { id : new ObjectId() , url : '' , fileName : ''}})
     image: FileManager;
   
-    @Prop({default : `${process.env.URL_BACKEND}/public/defult-profile.jpg`})
+    @Prop({default : `idauthy`})
     idAuthy: string;
   
     @Prop({ type: Boolean, default: false })
