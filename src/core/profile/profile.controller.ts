@@ -32,7 +32,7 @@ export class ProfileController {
 
   @Patch('/me')
   async patchProfile(@Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(1, updateProfileDto);
+    return this.profileService.update('', updateProfileDto);
   }
 
   @Delete(':id')

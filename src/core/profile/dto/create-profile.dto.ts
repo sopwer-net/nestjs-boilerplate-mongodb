@@ -1,4 +1,4 @@
-import { IsEmail, IsEmpty, IsString, MinLength } from "class-validator"
+import { IsEmail, IsEmpty, IsOptional, IsString, MinLength } from "class-validator"
 
 export class CreateProfileDto {
 
@@ -18,5 +18,6 @@ export class CreateProfileDto {
     @IsEmpty()
     isVerified:boolean
 
+    
   
 }

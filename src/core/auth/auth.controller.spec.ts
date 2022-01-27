@@ -2,25 +2,28 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileService } from '../profile/profile.service';
 import { AuthController, PayloadSignup } from './auth.controller';
 import { AuthService } from './auth.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { HttpStatus } from '@nestjs/common';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: AuthService;
-  let profileService: ProfileService;
+  let eventEmitter : EventEmitter2  
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
         {
-          provide: ProfileService,
+          provide: EventEmitter2,
           useFactory: () => ({
-            create: jest.fn(() => ({})),
+            emit: jest.fn(() => ({})),
           }),
         },      {
           provide: AuthService,
           useFactory: () => ({
             validate: jest.fn(() => ({})),
+            register : jest.fn(()=>{})
           }),
         }
         
@@ -29,7 +32,6 @@ describe('AuthController', () => {
 
     controller = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
-    profileService = module.get<ProfileService>(ProfileService);
   });
 
   describe('user signup', ()=>{
@@ -43,7 +45,7 @@ describe('AuthController', () => {
         passwordConfirm: 'string'
       }
       const result = await controller.register(payload)
-      expect(profileService.create).toHaveBeenCalledWith(payload);
+      expect(authService.register).toHaveBeenCalledWith(payload);
     });
   });
 
@@ -53,8 +55,15 @@ describe('AuthController', () => {
         'email': 'xhijack@gmail.com',
         'password': 'WakanDaForever'
       }
+      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjIyYzE3NThmYTdlNzk2ZTJkZGY2MSIsImVtYWlsIjoiYnVkYXppbWJ1ZEBnbWFpbC5jb20iLCJpYXQiOjE2NDMyNjY5MzIsImV4cCI6MTY0MzM1MzMzMn0.mG6BYdhiUuEbazQqwm4pEc42m5dV7YA6XRHAoi7URkg"
+      jest.spyOn(authService , "validate").mockResolvedValue(token)
       const result = await controller.login(payload);
       expect(authService.validate).toHaveBeenCalledWith(payload);
+      expect(result).toEqual({
+        accessToken : token,
+        message : 'OK',
+        status : HttpStatus.OK
+      })
     })
   })
 });

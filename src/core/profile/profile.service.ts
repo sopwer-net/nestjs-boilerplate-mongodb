@@ -23,9 +23,14 @@ export class ProfileService {
     return new Profile();
   }
 
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+  async findOneByEmail(email : string) : Promise<Profile>{
+    return this.profileRepository.findOne({email : email})
   }
+
+  update(id: string, updateProfileDto: UpdateProfileDto) {
+    return this.profileRepository.findOneAndUpdate({_id : id} ,updateProfileDto);
+  }
+
 
   remove(id: number) {
     return `This action removes a #${id} profile`;

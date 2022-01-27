@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import {  SesService } from '@nextnm/nestjs-ses';
 import { IMailService } from '../../mail.interface';
 import { SesEmailOptions } from '@nextnm/nestjs-ses'
@@ -9,7 +9,7 @@ import { EmailOptions } from '../../email-options.interface';
 export class MailSasService implements IMailService{
 
         emailOptions : SesEmailOptions 
-
+        logger : Logger = new Logger(MailSasService.name)
         constructor(private sesService: SesService) {
            this.emailOptions = {
                "from":"noreply@keepmy.space",
@@ -24,8 +24,8 @@ export class MailSasService implements IMailService{
                 Object.assign(this.emailOptions , option)
                 await this.sesService.sendEmail(this.emailOptions);
 
-            }catch(e){
-                console.log(e)
+            }catch(error){
+                this.logger.error(error)
             }
         
 

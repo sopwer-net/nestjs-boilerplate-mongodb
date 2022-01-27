@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthMailService } from './auth-mail/auth-mail.service';
+import { AuthMailService } from './verification/send-verification.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { HashService } from './authenticator/hash.service';

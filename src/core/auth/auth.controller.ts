@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { IsString, Min, IsEmail, MinLength, MaxLength, Matches, IsPhoneNumber } from 'class-validator';
-import { ProfileService } from '../profile/profile.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { IsString, Min, IsEmail, MinLength, MaxLength, Matches, IsPhoneNumber, IsNotEmpty } from 'class-validator';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Match } from './match.decorator';
+import { LocalAuthGuard } from './authenticator/local-auth.guard';
 
 export class PayloadSignup{
   @IsString()
@@ -30,23 +29,54 @@ export class PayloadSignup{
 
 
 export class PayloadSignin{
+  @IsNotEmpty()
   email: string;
+  @IsNotEmpty()
   password: string;
 }
 
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly eventEmitter : EventEmitter2
+  ) {}
 
   @Post('signup')
   async register(@Body()payload: PayloadSignup){
-    return await this.authService.register(payload);
+
+    const register =  await this.authService.register(payload);
+
+    await this.eventEmitter.emit('send.token' ,payload.email , register)
+
+    return {
+      message : "check your email"
+    }
+
   }
 
   @Post('signin')
-  async login(payload: PayloadSignin){
-    const token = await this.authService.validate(payload);
-    return {'token': token}
+  @HttpCode(200)
+  @UseGuards(LocalAuthGuard)
+  async login(@Body()payload: PayloadSignin){
+    return {
+      accessToken : await this.authService.validate(payload),
+      message : 'OK',
+      status : HttpStatus.OK
+    }
+  }
+
+  @Get('confirm/:token')
+  async verification(@Param('token') token : string){
+    await this.authService.verification(token)
+    return {
+      message : 'youve been confirm thanks'
+    }
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body('email') email :string){
+
   }
 }
