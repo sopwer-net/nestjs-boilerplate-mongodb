@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { FileManager } from '../../file-manager/file.response';
 import { ObjectId } from 'mongodb';
+import { FileManager } from "../../../core/file-manager/file.response";
 
 export type ProfileDocument = Profile & Document
 
