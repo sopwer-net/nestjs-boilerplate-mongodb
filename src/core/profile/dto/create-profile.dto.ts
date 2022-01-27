@@ -1,6 +1,7 @@
 import { IsEmail, IsEmpty, IsString, MinLength } from "class-validator"
 
 export class CreateProfileDto {
+
     @IsString()
     fullName:string
 
@@ -17,7 +18,5 @@ export class CreateProfileDto {
     @IsEmpty()
     isVerified:boolean
 
-    @IsEmpty()
-    idAuthy: string;
-
+  
 }

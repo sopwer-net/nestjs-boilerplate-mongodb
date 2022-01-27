@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { FacebookStrategy } from './facebook-auth/facebook.strategy';
 import { GoogleStrategy } from './google-auth/google.strategy';
 import { MailModule } from '../mail/mail.module';
-import { MailService } from '../mail/mail.service';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   imports:[
@@ -17,7 +17,8 @@ import { MailService } from '../mail/mail.service';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '24h' },
     }),
-    MailModule
+    MailModule,
+    ProfileModule
     ],
   controllers:[AuthController],
   providers: [

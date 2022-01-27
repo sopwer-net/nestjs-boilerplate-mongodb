@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { Profile } from './entities/profile.entity';
+import { ProfileRepository } from './profile.repository';
 
 @Injectable()
 export class ProfileService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+
+  constructor(private profileRepository : ProfileRepository){
+
+  }
+
+  create(createProfileDto: CreateProfileDto) :Promise<Profile>{
+    return this.profileRepository.save({hashedPassword : createProfileDto.password ,...createProfileDto})
   }
 
   findAll() {
     return `This action returns all profile`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(id: string)  : Promise<Profile>{
+    return new Profile();
   }
 
   update(id: number, updateProfileDto: UpdateProfileDto) {

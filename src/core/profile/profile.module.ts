@@ -4,6 +4,7 @@ import { ProfileController } from './profile.controller';
 import { MongooseModule, Schema } from '@nestjs/mongoose';
 import { Profile, ProfileSchema } from './entities/profile.entity';
 import { Account, AccountSchema } from './entities/account.entity';
+import { ProfileRepository } from './profile.repository';
 
 @Module({
   imports :[
@@ -11,6 +12,7 @@ import { Account, AccountSchema } from './entities/account.entity';
     MongooseModule.forFeature([{ name: Profile.name, schema: ProfileSchema }]),
   ],
   controllers: [ProfileController],
-  providers: [ProfileService]
+  providers: [ProfileService , ProfileRepository] ,
+  exports : [ProfileService]
 })
 export class ProfileModule {}
