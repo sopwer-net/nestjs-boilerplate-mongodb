@@ -96,12 +96,14 @@ export class AuthController {
 
     return {
       message : "check your email",
-      token : token
     }
   }
 
   @Get('reset-password/:token')
-  resetPassword(@Param('token')token : string , @Body() password : PayloadReset){ 
-    return this.authService.resetPassword(token , password )
+  async resetPassword(@Param('token')token : string , @Body() password : PayloadReset){ 
+    await this.authService.resetPassword(token , password )
+    return {
+      message :"ok your password is changed"
+    }
   }
 }

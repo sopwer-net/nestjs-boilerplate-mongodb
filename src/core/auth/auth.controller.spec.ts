@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileService } from '../profile/profile.service';
-import { AuthController, PayloadSignup } from './auth.controller';
+import { AuthController, PayloadSignup, PayloadReset } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HttpStatus } from '@nestjs/common';
+import { ResetPassword } from './reset-forget-password-dto/reset-password.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -25,7 +26,8 @@ describe('AuthController', () => {
             validate: jest.fn(() => ({})),
             register : jest.fn(()=>{}),
             verification : jest.fn(()=>{}),
-            forgetPassword: jest.fn(()=>{})
+            forgetPassword: jest.fn(()=>{}),
+            resetPassword : jest.fn(()=>{})
 
           }),
         }
@@ -85,7 +87,7 @@ describe('AuthController', () => {
     })
   })
 
-  describe('it called authController.resetPassword' ,()=>{
+  describe('it called authController.forgetPassword' ,()=>{
     it('should called authService.forgetPassword and eventEmitter.emit ',async ()=>{
       const email = "azim@gmail.com"
       const token = "asdhfjsahfjsadhfjsafgjhsdahfgs"
@@ -96,6 +98,18 @@ describe('AuthController', () => {
       expect(result).toEqual({
         message : "check your email"
       })
+    })
+  })
+
+  describe('it called authController.resetPassowrd' ,()=>{
+    it('should called authService.resetPassword',async()=>{
+      const token = "token"
+      const payloadReset : PayloadReset = {
+        password :"azim!akjfkd",
+        passwordConfirm : "azim!akjfkd"
+      }
+      const result = await controller.resetPassword(token , payloadReset)
+      expect(authService.resetPassword).toHaveBeenCalledWith(token , payloadReset)
     })
   })
 
