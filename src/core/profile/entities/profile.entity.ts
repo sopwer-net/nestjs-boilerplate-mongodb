@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Exclude } from "class-transformer";
 import { ObjectId } from 'mongodb';
 import { FileManager } from "../../../core/file-manager/file.response";
 
@@ -22,6 +23,7 @@ export class Profile {
     phoneNumber: string;
   
     @Prop({ required: true })
+    @Exclude()
     isVerified: boolean;
   
     @Prop()
