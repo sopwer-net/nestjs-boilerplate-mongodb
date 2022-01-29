@@ -11,9 +11,7 @@ import { FilterParam } from '../base-repository/pagination.params';
 @UseGuards(JwtAuthGuard)
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
-
  
-
   @Get()
   findAll(@Query()filterParam : FilterParam) {
     return this.profileService.findAll(filterParam);
