@@ -3,7 +3,6 @@ const handlebars = require("handlebars")
 const fs = require("fs")
 
 export interface EmailOptions {
-    from: string;
     to: string | string[];
     subject: string;
     text?: string;

@@ -8,7 +8,7 @@ import { EmailOptions } from '../../email-options.interface';
 @Injectable()
 export class MailSasService implements IMailService{
 
-        emailOptions : SesEmailOptions 
+        private emailOptions : SesEmailOptions 
         logger : Logger = new Logger(MailSasService.name)
         constructor(private sesService: SesService) {
            this.emailOptions = {

@@ -1,12 +1,11 @@
 import { Injectable, BadRequestException, ConsoleLogger } from '@nestjs/common';
 import { MailgunService } from '@nextnm/nestjs-mailgun';
 import { MailgunEmailModel } from '@nextnm/nestjs-mailgun/dist/nestjs-mailgun/classes/mailgun-email-model';
-import { EmailOptions } from '../../email-options.interface';
 import { IMailService } from '../../mail.interface';
-
+import { EmailOptions } from '@nextnm/nestjs-mailgun'
 @Injectable()
 export class MailGunService implements IMailService {
-  emailOptions: EmailOptions;
+  private emailOptions: EmailOptions;
 
   constructor(private mailgunService: MailgunService) {
     this.emailOptions = {
