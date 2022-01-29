@@ -3,12 +3,20 @@ import { InjectModel } from "@nestjs/mongoose";
 import { BaseRepository } from '../base-repository/base-repository.service';
 import { Profile, ProfileDocument } from './entities/profile.entity';
 import { Model, FilterQuery, UpdateQuery } from 'mongoose';
+import { FilterParam } from "../base-repository/pagination.params";
 
 @Injectable()
 export class ProfileRepository extends BaseRepository<ProfileDocument>{
     constructor(@InjectModel(Profile.name) private profileModel : Model<ProfileDocument>){
         super(profileModel)
     }
+
+    async find(entityFilterQuery?: FilterQuery<ProfileDocument>, filterParam?:FilterParam): Promise<ProfileDocument[] | null>{
+
+        return this.entityModel.find(entityFilterQuery).limit(filterParam.limit).select('-hashedPassword');
+        
+    }
+
 
     async findOneAndExlcude(
         entityFilterQuery: FilterQuery<ProfileDocument>,
