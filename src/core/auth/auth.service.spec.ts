@@ -6,7 +6,7 @@ import { PayloadSignin, PayloadSignup, PayloadReset } from './auth.controller';
 import { Profile } from '../profile/entities/profile.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateProfileDto } from '../profile/dto/update-profile.dto';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -63,6 +63,28 @@ describe('AuthService', () => {
       expect(profileService.create).toHaveBeenCalledWith({isVerified : false  ,...payload})
       expect(jwtService.sign).toHaveBeenCalledWith({idUser : profile.id } , {expiresIn : '999d'})
     })
+
+
+    it('should called hashedService.hashPassword and profileService.create  and catch error' ,async()=>{
+      const payload : PayloadSignup = {
+        "email" :"azim@gmail.com",
+        "username" : "azimemaste",
+        "phoneNumber" :"+627218739127",
+        "passwordConfirm":"azimA123123",
+        "password" : "azimA123123",
+        "fullName":"azim"
+      }
+      const profile : Profile = new Profile()
+      try{
+        const result = await authService.register(payload)
+        expect(hashService.hashPassword).toHaveBeenCalledWith(payload.password)
+        expect(profileService.create).toHaveBeenCalledWith({isVerified : false  ,...payload})
+        expect(jwtService.sign).toHaveBeenCalledWith({idUser : profile.id } , {expiresIn : '999d'})
+      }catch(error){
+        expect(error).toBeInstanceOf(ConflictException)
+      }
+    
+    })
   })
 
   describe('it called authService.verificatoin',()=>{
@@ -75,6 +97,22 @@ describe('AuthService', () => {
       const result = await authService.verification(token)
       expect(jwtService.verify).toHaveBeenCalledWith(token)
       expect(profileService.update).toHaveBeenCalledWith(verifyToken.idUser ,{isVerified : true ,...new UpdateProfileDto()})
+    })
+
+
+    it('should called jwtService.verify and profileService.update and handle error',async()=>{
+      const token = 'dsakkfji32ryasjfhjshdfjsdafj'
+      const verifyToken = {
+        idUser : "123"
+      }
+      try{
+        const result = await authService.verification(token)
+        expect(jwtService.verify).toHaveBeenCalledWith(token)
+        expect(profileService.update).toHaveBeenCalledWith(verifyToken.idUser ,{isVerified : true ,...new UpdateProfileDto()})
+      }catch(error){
+        expect(error).toBeInstanceOf(BadRequestException)
+      }
+     
     })
   })
 
@@ -152,6 +190,30 @@ describe('AuthService', () => {
       expect(jwtService.verify).toHaveBeenCalledWith(token)
       expect(profileService.update).toHaveBeenCalledWith(verifyToken.idUser ,{...payloadReset ,...new UpdateProfileDto()})
     })
+  })
+
+  it('should called hashedPasswordService.hash , jwtService.verify and profileService.update and handle error' ,async()=>{
+    const payloadReset : PayloadReset = {
+      "password":"Azim!@#1234",
+      "passwordConfirm":"Azim!@#1234"
+    }
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjIyYzE3NThmYTdlNzk2ZTJkZGY2MSIsImVtYWlsIjoiYnVkYXppbWJ1ZEBnbWFpbC5jb20iLCJpYXQiOjE2NDMyNjY5MzIsImV4cCI6MTY0MzM1MzMzMn0.mG6BYdhiUuEbazQqwm4pEc42m5dV7YA6XRHAoi7URkg'
+    const profile  = new Profile()
+    profile.email = "a123"
+    profile.id = "1231"
+    const verifyToken = {
+      idUser : '123'
+
+    } 
+    try{ const result = await authService.resetPassword(token , payloadReset)
+      expect(hashService.hashPassword).toHaveBeenCalledWith(payloadReset.password)
+      expect(jwtService.verify).toHaveBeenCalledWith(token)
+      expect(profileService.update).toHaveBeenCalledWith(verifyToken.idUser ,{...payloadReset ,...new UpdateProfileDto()})
+
+    }catch(error){
+      expect(error).toBeInstanceOf(BadRequestException)
+    } 
+   
   })
 
 });

@@ -1,6 +1,6 @@
 import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
 import { FileManager } from '../../file-manager/file.response';
-import { IsOptional, IsEnum, IsString } from 'class-validator';
+import { IsOptional, IsEnum, IsString, IsEmpty } from 'class-validator';
 import { CreateProfileDto } from './create-profile.dto';
 
 export class UpdateProfileDto extends PickType(CreateProfileDto,['isVerified' ,'password']) {
@@ -12,7 +12,7 @@ export class UpdateProfileDto extends PickType(CreateProfileDto,['isVerified' ,'
     @IsOptional()
     fullName : string
     
-    @IsString()
+    @IsEmpty()
     password:string
 
  

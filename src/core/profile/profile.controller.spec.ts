@@ -1,20 +1,90 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { FilterParam } from '../base-repository/pagination.params';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
-
+import { Profile } from './entities/profile.entity';
+import { ExecutionContext, BadRequestException } from '@nestjs/common';
+import { createMock } from '@golevelup/ts-jest';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 describe('ProfileController', () => {
-  let controller: ProfileController;
-
+  let profileController: ProfileController;
+  let profileService : ProfileService
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ProfileController],
-      providers: [ProfileService],
+      providers: [ProfileController,
+        {
+          provide : ProfileService  , useFactory:()=>({
+            findAll : jest.fn(()=>{}),
+            findOne : jest.fn(()=>{}),
+            update : jest.fn(()=>{})
+          })
+        }
+      ],
     }).compile();
 
-    controller = module.get<ProfileController>(ProfileController);
+    profileController = module.get<ProfileController>(ProfileController);
+    profileService = module.get<ProfileService>(ProfileService)
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+  describe('it called profileController.findAll',()=>{
+    it('should called profileService.findAll' ,async ()=>{
+      const filterParam = new FilterParam()
+      const resultprofile : Profile[] =[]
+      jest.spyOn(profileService , "findAll").mockResolvedValue(resultprofile)
+      const result  = await profileController.findAll(filterParam)
+      expect(profileService.findAll).toHaveBeenCalledWith(filterParam)
+      expect(result).toEqual(resultprofile)
+    })
+  })
+
+  describe('it called profileController.getProfile' ,()=>{
+    it('should called profileService.findOne' ,async()=>{
+      const context = createMock<ExecutionContext>();
+      const req  = context.switchToHttp().getRequest()
+      req['user'] = {
+        id : '123'
+      }
+      const profile = new Profile()
+      jest.spyOn(profileService , "findOne").mockResolvedValue(profile)
+      const result = await profileController.getProfile(req)
+      expect(profileService.findOne).toHaveBeenCalledWith(req['user'].id)
+      expect(result).toEqual(profile)
+    })
+  })
+
+  it('should called profileService.findOne and bad request cuz not found' ,async()=>{
+    const context = createMock<ExecutionContext>();
+    const req  = context.switchToHttp().getRequest()
+    req['user'] = {
+      id : '123'
+    }
+    const profile = new Profile()
+    try{
+      const result = await profileController.getProfile(req)
+      expect(profileService.findOne).toHaveBeenCalledWith(req['user'].id)
+    }catch(error){
+      expect(error).toBeInstanceOf(BadRequestException)
+    }
+  
+  })
+
+  describe('it called profileController.patchProfile',()=>{
+    it('should called profileService.udpate' ,async()=>{
+      const context = createMock<ExecutionContext>();
+      const req  = context.switchToHttp().getRequest()
+      req['user'] = {
+        id : '123'
+      }
+      const profile = new Profile()
+      const updateProfileDto= new UpdateProfileDto()
+      jest.spyOn(profileService , "update").mockResolvedValue(profile)
+      const result = await profileController.patchProfile(req ,updateProfileDto)
+      expect(profileService.update).toHaveBeenCalledWith(req['user'].id ,updateProfileDto)
+      expect(result).toEqual(profile)
+    })
+  })
+
+ 
+
+ 
 });

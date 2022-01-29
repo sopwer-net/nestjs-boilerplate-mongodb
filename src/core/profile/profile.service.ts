@@ -28,12 +28,10 @@ export class ProfileService {
     return this.profileRepository.findOne({email : email})
   }
 
-  update(id: string, updateProfileDto: UpdateProfileDto) {
+  update(id: string, updateProfileDto: UpdateProfileDto) : Promise<Profile> {
     return this.profileRepository.findOneAndUpdateExclude({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto});
   }
 
 
-  remove(id: string) {
-    return this.profileRepository.findOneAndExlcude({_id : id} , {isActive : false});
-  }
+ 
 }

@@ -21,7 +21,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     
     const user = await this.profileService.findOneByEmail(email);
     const comparePassword = await this.hashService.comparePassword(password , user.hashedPassword)
-    if (comparePassword) {
+    console.log(password)
+   if (comparePassword) {
       const {email , id} = user
       return {
         email,

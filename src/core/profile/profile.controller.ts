@@ -1,30 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query, Req } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from '../auth/authenticator/jwt-auth.guard';
 import { Profile } from './entities/profile.entity';
+import { FilterParam } from '../base-repository/pagination.params';
 
 @Controller('profiles')
 @UseGuards(JwtAuthGuard)
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(createProfileDto);
-  }
+ 
 
   @Get()
-  findAll() {
-    return this.profileService.findAll();
+  findAll(@Query()filterParam : FilterParam) {
+    return this.profileService.findAll(filterParam);
   }
 
   @Get('/me')
   @UseGuards(JwtAuthGuard)
-  async getProfile(): Promise<Profile> {
-    const profile = await this.profileService.findOne('id');
+  async getProfile(@Req() request): Promise<Profile> {
+    console.log(request.user)
+    const profile = await this.profileService.findOne(request.user.id);
     if (!profile){
       throw new BadRequestException('Profile Not Found')
     }
@@ -32,12 +31,9 @@ export class ProfileController {
   }
 
   @Patch('/me')
-  async patchProfile(@Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update('', updateProfileDto);
+  async patchProfile(@Req() request,@Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.update(request.user.id, updateProfileDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
-  }
+ 
 }

@@ -4,6 +4,7 @@ import { ProfileRepository } from './profile.repository';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { Profile, ProfileDocument } from './entities/profile.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { FilterParam } from '../base-repository/pagination.params';
 
 describe('ProfileService', () => {
   let profileService: ProfileService;
@@ -16,7 +17,10 @@ describe('ProfileService', () => {
             save : jest.fn(()=>{}),
             findOne : jest.fn(()=>{}),
             findOneAndUpdate : jest.fn(()=>{}),
-            remove : jest.fn(()=>{})
+            remove : jest.fn(()=>{}),
+            findOneAndExlcude : jest.fn(()=>{}),
+            findOneAndUpdateExclude : jest.fn(()=>{}),
+            find : jest.fn(()=>{})
           })
         }
       ],
@@ -51,34 +55,38 @@ describe('ProfileService', () => {
   })
 
   describe('it called profileService.update' , ()=>{
-    it('should called profilerepository.update' , async()=>{
+    it('should called profilerepository.findOneAndUpdateExlude' , async()=>{
       const id = ""
       const updateProfileDto = new UpdateProfileDto()
       updateProfileDto.password = "123"
       const result = await profileService.update(id , updateProfileDto)
-      expect(profileRepository.findOneAndUpdate).toHaveBeenCalledWith({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto})
+      expect(profileRepository.findOneAndUpdateExclude).toHaveBeenCalledWith({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto})
     })
   })
 
   describe('it called profileService.findOne',()=>{
-    it('should called profileRepository.findOne',async ()=>{
+    it('should called profileRepository.findOneAndExclude',async ()=>{
       const id = ""
       const profile = new Profile()
-      jest.spyOn(profileRepository , "findOne").mockResolvedValue(profile as ProfileDocument)
+      jest.spyOn(profileRepository , "findOneAndExlcude").mockResolvedValue(profile as ProfileDocument)
       const result = await profileService.findOne(id)
-      expect(profileRepository.findOne).toHaveBeenCalledWith({_id : id})
+      expect(profileRepository.findOneAndExlcude).toHaveBeenCalledWith({_id : id})
       expect(result).toEqual(profile)
     })
   })
 
-  describe('it called profileService.remove' ,()=>{
-    it('should called profileRepository.remove' ,async()=>{
-      const id = "id"
-      const result = await profileService.remove(id)
-      expect(profileRepository.findOneAndUpdate).toHaveBeenCalledWith({_id : id} , {isActive : false})
 
+  describe('it called profileService.findAll',()=>{
+    it('should called profileRepository.find',async ()=>{
+      const filterParam = new FilterParam()
+      const findProfile : Profile[] = []
+      jest.spyOn(profileRepository , "find").mockResolvedValue(findProfile as ProfileDocument[])
+      const result = await profileService.findAll(filterParam)
+      expect(profileRepository.find).toHaveBeenCalledWith({isActive : true} , filterParam)
+      expect(result).toEqual(findProfile)
     })
   })
-  
+
+ 
 
 });
