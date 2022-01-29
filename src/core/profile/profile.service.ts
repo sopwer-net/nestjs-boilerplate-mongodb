@@ -3,6 +3,7 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { ProfileRepository } from './profile.repository';
+import { FilterParam } from '../base-repository/pagination.params';
 
 @Injectable()
 export class ProfileService {
@@ -15,12 +16,12 @@ export class ProfileService {
     return this.profileRepository.save({hashedPassword : createProfileDto.password ,...createProfileDto})
   }
 
-  findAll() {
-    return `This action returns all profile`;
+  findAll(filterParam : FilterParam) : Promise<Profile[]> {
+    return this.profileRepository.find({isActive : true} , new FilterParam())
   }
 
   async findOne(id: string)  : Promise<Profile>{
-    return new Profile();
+    return  this.profileRepository.findOneAndExlcude({_id : id})
   }
 
   async findOneByEmail(email : string) : Promise<Profile>{
@@ -28,11 +29,11 @@ export class ProfileService {
   }
 
   update(id: string, updateProfileDto: UpdateProfileDto) {
-    return this.profileRepository.findOneAndUpdate({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto});
+    return this.profileRepository.findOneAndUpdateExclude({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto});
   }
 
 
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+  remove(id: string) {
+    return this.profileRepository.findOneAndExlcude({_id : id} , {isActive : false});
   }
 }
