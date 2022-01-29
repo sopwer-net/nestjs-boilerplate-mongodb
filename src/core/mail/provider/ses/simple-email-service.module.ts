@@ -4,7 +4,7 @@ import { SesModule } from "@nextnm/nestjs-ses";
 @Module({
     imports : [ 
         ConfigModule.forRoot({
-            envFilePath: '.development.env',
+            envFilePath: '.env',
             isGlobal : true
           }),
         SesModule.forRoot({
