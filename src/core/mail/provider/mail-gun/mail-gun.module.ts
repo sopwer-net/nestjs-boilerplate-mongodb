@@ -5,7 +5,7 @@ import { MailgunModule } from "@nextnm/nestjs-mailgun";
 @Module({
     imports :[
         ConfigModule.forRoot({
-            envFilePath: '.development.env',
+            envFilePath: '.env',
             isGlobal : true
           }),
         MailgunModule.forRoot({

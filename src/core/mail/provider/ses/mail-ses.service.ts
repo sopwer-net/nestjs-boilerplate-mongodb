@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import {  SesService } from '@nextnm/nestjs-ses';
 import { IMailService } from '../../mail.interface';
 import { SesEmailOptions } from '@nextnm/nestjs-ses'
-import { EmailOptions } from '../../email-options.interface';
+import { EmailOptionsDto } from '../../email-options.interface';
 
 
 @Injectable()
@@ -19,7 +19,7 @@ export class MailSasService implements IMailService{
            }
         }
 
-        async sendEmail(option: EmailOptions): Promise<any> {
+        async sendEmail(option: EmailOptionsDto): Promise<any> {
             try{
                 Object.assign(this.emailOptions , option)
                 await this.sesService.sendEmail(this.emailOptions);

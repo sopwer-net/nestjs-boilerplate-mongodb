@@ -3,6 +3,7 @@ import { MailgunService } from '@nextnm/nestjs-mailgun';
 import { MailgunEmailModel } from '@nextnm/nestjs-mailgun/dist/nestjs-mailgun/classes/mailgun-email-model';
 import { IMailService } from '../../mail.interface';
 import { EmailOptions } from '@nextnm/nestjs-mailgun'
+import { EmailOptionsDto } from '../../email-options.interface';
 @Injectable()
 export class MailGunService implements IMailService {
   private emailOptions: EmailOptions;
@@ -19,7 +20,7 @@ export class MailGunService implements IMailService {
     };
   }
 
-  async sendEmail(option: EmailOptions): Promise<void> {
+  async sendEmail(option: EmailOptionsDto): Promise<void> {
     try {
       const data = new MailgunEmailModel(this.emailOptions.from, option.to, option.subject, 'text', option.html);
 

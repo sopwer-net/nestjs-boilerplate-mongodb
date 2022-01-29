@@ -2,7 +2,7 @@ const path = require("path")
 const handlebars = require("handlebars")
 const fs = require("fs")
 
-export interface EmailOptions {
+export interface EmailOptionsDto {
     to: string | string[];
     subject: string;
     text?: string;

@@ -1,4 +1,4 @@
-import { EmailOptions } from '../../email-options.interface';
+import { EmailOptionsDto } from '../../email-options.interface';
 import { MailService } from '../../mail.service';
 import { Test } from '@nestjs/testing';
 import { MailgunService } from '@nextnm/nestjs-mailgun';

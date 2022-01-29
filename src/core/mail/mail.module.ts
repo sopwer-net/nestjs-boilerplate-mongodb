@@ -6,7 +6,7 @@ import { MailProviderService } from './provider/mail-provider.service';
 
 @Module({
     imports:[
-      MailProviderService.getMailProvider('SES')
+      MailProviderService.getMailProvider('MAILGUN')
     ],
     providers: [MailService],
     exports:[MailService]

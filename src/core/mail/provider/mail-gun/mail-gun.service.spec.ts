@@ -1,7 +1,7 @@
-import { EmailOptions } from '../../email-options.interface';
+import { EmailOptionsDto } from '../../email-options.interface';
 import { MailService } from '../../mail.service';
 import { Test } from '@nestjs/testing';
-import { MailgunService } from '@nextnm/nestjs-mailgun';
+import { EmailOptions, MailgunService } from '@nextnm/nestjs-mailgun';
 import { MailGunService } from './mail-gun.service';
 describe('mailService',()=>{
     let mailGunService : MailGunService

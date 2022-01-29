@@ -1,5 +1,5 @@
-import { EmailOptions } from "./email-options.interface";
+import { EmailOptionsDto } from "./email-options.interface";
 
 export interface IMailService{
-    sendEmail(option:EmailOptions):Promise<void>
+    sendEmail(option:EmailOptionsDto):Promise<void>
 }
