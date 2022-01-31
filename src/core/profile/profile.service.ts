@@ -21,16 +21,17 @@ export class ProfileService {
   }
 
   async findOne(id: string)  : Promise<Profile>{
-    return  this.profileRepository.findOneAndExlcude({_id : id})
+    return  this.profileRepository.findOneAndExlcude({_id : id , isActive : true})
   }
 
   async findOneByEmail(email : string) : Promise<Profile>{
-    return this.profileRepository.findOne({email : email})
+    return this.profileRepository.findOne({email : email , isActive : true})
   }
 
   update(id: string, updateProfileDto: UpdateProfileDto) : Promise<Profile> {
     return this.profileRepository.findOneAndUpdateExclude({_id : id} ,{hashedPassword:updateProfileDto.password ,...updateProfileDto});
   }
+
 
 
  

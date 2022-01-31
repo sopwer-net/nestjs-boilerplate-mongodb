@@ -46,8 +46,9 @@ describe('profileRepository',()=>{
     })
 
     it('profileRepository extends baseRepository',async()=>{
-        let profileRepository = ProfileRepository.prototype
-        let baseRepository = BaseRepository.prototype
-        expect(profileRepository).toEqual(baseRepository)
+        const profileRepository = new ProfileRepository(entityModel)
+        const isExtends = profileRepository instanceof BaseRepository
+        expect(isExtends).toEqual(true)
+
     })
 })

@@ -37,7 +37,7 @@ describe('ProfileController', () => {
     })
   })
 
-  describe('it called profileController.getProfile' ,()=>{
+  describe('it called profileController.getProfile with me' ,()=>{
     it('should called profileService.findOne' ,async()=>{
       const context = createMock<ExecutionContext>();
       const req  = context.switchToHttp().getRequest()
@@ -45,9 +45,26 @@ describe('ProfileController', () => {
         id : '123'
       }
       const profile = new Profile()
+      const id = "me"
       jest.spyOn(profileService , "findOne").mockResolvedValue(profile)
-      const result = await profileController.getProfile(req)
+      const result = await profileController.getProfile(id ,req)
       expect(profileService.findOne).toHaveBeenCalledWith(req['user'].id)
+      expect(result).toEqual(profile)
+    })
+  })
+
+  describe('it called profileController.getProfile with id' ,()=>{
+    it('should called profileService.findOne' ,async()=>{
+      const context = createMock<ExecutionContext>();
+      const req  = context.switchToHttp().getRequest()
+      req['user'] = {
+        id : '123'
+      }
+      const profile = new Profile()
+      const id = "id"
+      jest.spyOn(profileService , "findOne").mockResolvedValue(profile)
+      const result = await profileController.getProfile(id ,req)
+      expect(profileService.findOne).toHaveBeenCalledWith(id)
       expect(result).toEqual(profile)
     })
   })
@@ -60,7 +77,8 @@ describe('ProfileController', () => {
     }
     const profile = new Profile()
     try{
-      const result = await profileController.getProfile(req)
+      const id = "id"
+      const result = await profileController.getProfile(id ,req)
       expect(profileService.findOne).toHaveBeenCalledWith(req['user'].id)
     }catch(error){
       expect(error).toBeInstanceOf(BadRequestException)

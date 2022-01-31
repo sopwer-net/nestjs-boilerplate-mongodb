@@ -1,9 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query, Req } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthGuard } from '../auth/authenticator/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/authentication/jwt-auth.guard';
 import { Profile } from './entities/profile.entity';
 import { FilterParam } from '../base-repository/pagination.params';
 
@@ -17,11 +15,13 @@ export class ProfileController {
     return this.profileService.findAll(filterParam);
   }
 
-  @Get('/me')
+  @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@Req() request): Promise<Profile> {
-    console.log(request.user)
-    const profile = await this.profileService.findOne(request.user.id);
+  async getProfile(@Param('id')id : string,@Req() request): Promise<Profile> {
+    if(id == "me"){
+      return  await this.profileService.findOne(request.user.id);
+    }
+    const profile = await this.profileService.findOne(id)
     if (!profile){
       throw new BadRequestException('Profile Not Found')
     }

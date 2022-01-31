@@ -49,7 +49,7 @@ describe('ProfileService', () => {
       const email = "mock email"
       jest.spyOn(profileRepository , "findOne").mockResolvedValue(profile as ProfileDocument)
       const result = await profileService.findOneByEmail(email)
-      expect(profileRepository.findOne).toHaveBeenCalledWith({email : email})
+      expect(profileRepository.findOne).toHaveBeenCalledWith({email : email , isActive : true})
       expect(result).toEqual(profile)
     })
   })
@@ -70,7 +70,7 @@ describe('ProfileService', () => {
       const profile = new Profile()
       jest.spyOn(profileRepository , "findOneAndExlcude").mockResolvedValue(profile as ProfileDocument)
       const result = await profileService.findOne(id)
-      expect(profileRepository.findOneAndExlcude).toHaveBeenCalledWith({_id : id})
+      expect(profileRepository.findOneAndExlcude).toHaveBeenCalledWith({_id : id , isActive : true})
       expect(result).toEqual(profile)
     })
   })
