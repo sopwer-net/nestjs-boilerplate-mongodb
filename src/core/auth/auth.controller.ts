@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IsString, Min, IsEmail, MinLength, MaxLength, Matches, IsPhoneNumber, IsNotEmpty } from 'class-validator';
 import { AuthService } from './auth.service';
 import { Match } from './match.decorator';
-import { LocalAuthGuard } from './authenticator/local-auth.guard';
+import { LocalAuthGuard } from './authentication/local-auth.guard';
 
 export class PayloadSignup{
   @IsString()
@@ -33,6 +33,8 @@ export class PayloadSignin{
   email: string;
   @IsNotEmpty()
   password: string;
+  
+  id : string
 }
 
 export class PayloadReset{
@@ -57,11 +59,11 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  async register(@Body()payload: PayloadSignup){
+  async register(@Body()payload: PayloadSignup ){
 
     const register =  await this.authService.register(payload);
 
-    await this.eventEmitter.emit('send.token' ,payload.email , register)
+    await this.eventEmitter.emit('user.created' ,payload.email , register)
 
     return {
       message : "check your email"
@@ -72,9 +74,9 @@ export class AuthController {
   @Post('signin')
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
-  async login(@Body()payload: PayloadSignin){
+  async login(@Body()payload: PayloadSignin , @Req()request){
     return {
-      accessToken : await this.authService.validate(payload),
+      accessToken : await this.authService.validate(request.user),
       message : 'OK',
       status : HttpStatus.OK
     }
@@ -92,7 +94,7 @@ export class AuthController {
   async forgetPassword(@Body('email') email :string){
     const token = await this.authService.forgetPassword(email)
 
-    await this.eventEmitter.emit('send.tokenForget' ,email , token)
+    await this.eventEmitter.emit('user.forgetpassword' ,email , token)
 
     return {
       message : "check your email",

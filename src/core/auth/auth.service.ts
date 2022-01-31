@@ -3,7 +3,7 @@ import { ProfileService } from '../profile/profile.service';
 import { PayloadSignin, PayloadSignup, PayloadReset } from './auth.controller';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { HashService } from './authenticator/hash.service';
+import { HashService } from './authentication/hash.service';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateProfileDto } from '../profile/dto/update-profile.dto';
 
@@ -19,7 +19,7 @@ export class AuthService {
   ){}
 
   async validate(payload : PayloadSignin) : Promise<string>{
-    const profile = await this.profileService.findOneByEmail(payload.email);
+    const profile = await this.profileService.update(payload.id , new UpdateProfileDto());
     return this.jwtService.sign({id : profile.id , email : profile.email})
   }
   

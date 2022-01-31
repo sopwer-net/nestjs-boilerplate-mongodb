@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileService } from '../profile/profile.service';
 import { AuthService } from './auth.service';
-import { HashService } from './authenticator/hash.service';
+import { HashService } from './authentication/hash.service';
 import { PayloadSignin, PayloadSignup, PayloadReset } from './auth.controller';
 import { Profile } from '../profile/entities/profile.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -120,16 +120,17 @@ describe('AuthService', () => {
     it('should called profileService.findOneByEmail and jwtService.sign',async()=>{
       const payload : PayloadSignin = {
         email : "azim@gmail.com",
-        password : "123"
+        password : "123",
+        "id" : "123"
       }
       const profile = new Profile()
       profile.id = "213"
       profile.email = "azim@gmail.com"
       const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjIyYzE3NThmYTdlNzk2ZTJkZGY2MSIsImVtYWlsIjoiYnVkYXppbWJ1ZEBnbWFpbC5jb20iLCJpYXQiOjE2NDMyNjY5MzIsImV4cCI6MTY0MzM1MzMzMn0.mG6BYdhiUuEbazQqwm4pEc42m5dV7YA6XRHAoi7URkg'
       jest.spyOn(jwtService , "sign").mockReturnValue(token)
-      jest.spyOn(profileService , "findOneByEmail").mockResolvedValue(profile)
+      jest.spyOn(profileService , "update").mockResolvedValue(profile)
       const result = await authService.validate(payload)
-      expect(profileService.findOneByEmail).toHaveBeenCalledWith(payload.email)
+      expect(profileService.update).toHaveBeenCalledWith(payload.id , new UpdateProfileDto())
       expect(jwtService.sign).toHaveBeenCalledWith({id : profile.id , email : profile.email})
     })
   })

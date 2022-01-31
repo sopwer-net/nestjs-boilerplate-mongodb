@@ -54,7 +54,7 @@ describe('AuthController', () => {
       jest.spyOn(authService , "register").mockResolvedValue(token)
       const result = await controller.register(payload)
       expect(authService.register).toHaveBeenCalledWith(payload);
-      expect(eventEmitter.emit).toHaveBeenCalledWith('send.token' ,payload.email , token)
+      expect(eventEmitter.emit).toHaveBeenCalledWith('user.created' ,payload.email , token)
       expect(result).toEqual( {
         message : "check your email"
       })
@@ -65,11 +65,21 @@ describe('AuthController', () => {
     it("should call login auth service", async()=>{
       const payload = {
         'email': 'xhijack@gmail.com',
-        'password': 'WakanDaForever'
+        'password': 'WakanDaForever',
+        'id' : 'id'
+      }
+
+      const req = {
+        user : {
+          'email': 'xhijack@gmail.com',
+          'id' : 'id',
+        'password': 'WakanDaForever',
+
+        }
       }
       const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjIyYzE3NThmYTdlNzk2ZTJkZGY2MSIsImVtYWlsIjoiYnVkYXppbWJ1ZEBnbWFpbC5jb20iLCJpYXQiOjE2NDMyNjY5MzIsImV4cCI6MTY0MzM1MzMzMn0.mG6BYdhiUuEbazQqwm4pEc42m5dV7YA6XRHAoi7URkg"
       jest.spyOn(authService , "validate").mockResolvedValue(token)
-      const result = await controller.login(payload);
+      const result = await controller.login(payload , req);
       expect(authService.validate).toHaveBeenCalledWith(payload);
       expect(result).toEqual({
         accessToken : token,
@@ -94,7 +104,7 @@ describe('AuthController', () => {
       jest.spyOn(authService , "forgetPassword").mockResolvedValue(token)
       const result = await controller.forgetPassword(email)
       expect(authService.forgetPassword).toHaveBeenCalledWith(email)
-      expect(eventEmitter.emit).toHaveBeenCalledWith('send.tokenForget' ,email , token)
+      expect(eventEmitter.emit).toHaveBeenCalledWith('user.forgetpassword' ,email , token)
       expect(result).toEqual({
         message : "check your email"
       })

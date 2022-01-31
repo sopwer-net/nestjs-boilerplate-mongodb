@@ -7,7 +7,7 @@ import { MailService } from '../../mail/mail.service';
 export class AuthMailService {
   constructor(private mailService: MailService) {}
 
-  @OnEvent('send.tokenForget')
+  @OnEvent('user.forgetpassword')
   async sendEmailforget(email: string, token: string) {
   
     await this.mailService.sendEmail({to : email ,subject : 'Verifikasi email' ,html : TemplateEmail({
@@ -17,7 +17,7 @@ export class AuthMailService {
     })});
   }
 
-  @OnEvent('send.token')
+  @OnEvent('user.created')
   async sendEmailVerification(email: string, token: string) {
     await this.mailService.sendEmail({to : email ,subject : 'Verifikasi email' ,html:TemplateEmail({
       url: `${process.env.URL_CONFIRM_ACCOUNT}/${token}`,
