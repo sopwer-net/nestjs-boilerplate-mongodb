@@ -1,8 +1,6 @@
 import { ConflictException, Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { ProfileService } from '../profile/profile.service';
 import { PayloadSignin, PayloadSignup, PayloadReset } from './auth.controller';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { HashService } from './authentication/hash.service';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateProfileDto } from '../profile/dto/update-profile.dto';

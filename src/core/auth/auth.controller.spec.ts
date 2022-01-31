@@ -1,10 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProfileService } from '../profile/profile.service';
 import { AuthController, PayloadSignup, PayloadReset } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HttpStatus } from '@nestjs/common';
-import { ResetPassword } from './reset-forget-password-dto/reset-password.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
