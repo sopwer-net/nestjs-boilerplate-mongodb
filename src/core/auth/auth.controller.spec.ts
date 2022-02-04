@@ -3,6 +3,7 @@ import { AuthController, PayloadSignup, PayloadReset } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HttpStatus } from '@nestjs/common';
+import { LocalAuthGuard } from './authentication/local-auth.guard';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -84,6 +85,13 @@ describe('AuthController', () => {
         message : 'OK',
         status : HttpStatus.OK
       })
+    })
+
+    it('authController.login have decorator localguard',async()=>{
+      const guards = Reflect.getMetadata('__guards__', AuthController.prototype.login)
+      const guard = new (guards[0])
+
+      expect(guard).toBeInstanceOf(LocalAuthGuard)
     })
   })
 
